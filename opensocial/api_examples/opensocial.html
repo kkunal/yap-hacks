@@ -1,0 +1,54 @@
+<html>
+<div id="result-cell"></div>
+<style>
+div#result-cell {
+	font:Tahoma, Geneva, sans-serif;
+	font-size:11px;
+	padding:10px;
+}
+.wrap-in {
+	float:left;
+	width:100px;
+	height:100px;
+	background-color:#CCC;
+	border:1px solid #999;
+	padding:15px;
+	margin-right:10px;
+	margin-bottom:10px;
+	text-align:center;
+}
+</style>
+<script type="text/javascript">
+try {
+  function request() {  
+      // preapare array with key value pair   
+	  var params = {};
+	  params[gadgets.io.RequestParameters.AUTHORIZATION] = gadgets.io.AuthorizationType.SIGNED;
+	  params[gadgets.io.RequestParameters.CONTENT_TYPE] = gadgets.io.ContentType.TEXT;
+      params[gadgets.io.RequestParameters.METHOD] = gadgets.io.MethodType.GET;		
+	
+      // makeRequest call
+	  var url = "http://query.yahooapis.com/v1/yql?q=select%20givenName%2C%20familyName%2C%20image%20from%20social.profile%20where%20guid%20in%20(select%20guid%20from%20social.connections%20where%20owner_guid%3Dme)&format=json";
+	  gadgets.io.makeRequest(url, response, params);
+  };
+  
+  function response(obj) {
+	 /** obj.text contains the text of the page that was requested **/
+	 var responseData = obj.text;
+	 var jsonTextData = gadgets.json.parse(responseData);
+	 var markUp = '';
+	
+	 for(var i in jsonTextData.query.results.profile) {
+		  if(jsonTextData.query.results.profile[i].givenName == undefined) continue;
+		  markUp += '<div class="wrap-in"><img src="' + jsonTextData.query.results.profile[i].image.imageUrl +'" width="70px" height="70px" /><h4>' + jsonTextData.query.results.profile[i].givenName + ' ' + jsonTextData.query.results.profile[i].familyName + '</h4></div>';
+	 }
+	 
+	 document.getElementById("result-cell").innerHTML = markUp;
+  };
+  request();
+}
+catch(e) {
+	document.getElementById("result-cell").innerHTML = e.toString();
+}
+</script>
+</html>
