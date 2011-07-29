@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module xmlns:yap="http://www.yahoo.com/ns/yap">
+<!--
+    Sample Gadget XML Template. Created by Yahoo! on 2/18/10.
+    Copyright Yahoo! Inc. 2010. All rights reserved.
+     
+    README: 
+    After you edit this template, host the file at a location accessible via
+    a URL. Import the hosted file into your project to update your development
+    Gadget. You need to do this whenever you make changes to your hosted file.
+
+    IMPORTANT DOCUMENTATION:
+    Read Yahoo!'s requirements for ModulePrefs elements and attributes at:
+    http://developer.yahoo.com/yap/guide/gadgets-xml-config.html 
+-->
+    <!-- ModulePrefs
+         Required for Push Live: @title
+         Required for Publish: ModulePrefs@description,
+                               ModulePrefs@category,
+                               ModulePrefs/Icon,
+                               ModulePrefs/Locale -->
+    <ModulePrefs title="Flash YML"
+                 description="loading flash using yml:swf"
+                 category=""
+                 category2="">
+                 <Icon></Icon> <!-- Favicon URL, 16x16, Will be converted to .gif for use on Yahoo.com homepage -->        
+        <Locale lang="en" country="us"/> <!-- Supported languages -->
+
+        <!-- Yahoo! Extensions
+             Required Extensions for Push Live: NONE
+             Required Extensions for Publish: yap.gadgets.ShortDescription,
+                                              yap.gadgets.ApplicationIconUrl,
+                                              yap.gadgets.YahooComIconUrl,
+                                              yap.gadgets.ScreenshotUrl
+                                              -->
+        <yap:Extension name="yap.gadgets.ShortDescription">loading flash using yml:swf</yap:Extension> <!-- Shorter description. Max: 128 chars -->
+        <yap:Extension name="yap.gadgets.ApplicationIconUrl">http://yap-studio.com/qa/yap/yap_openhackday/yml/swf//icon.jpg</yap:Extension> <!-- Application Icon, 64x64 -->
+        <yap:Extension name="yap.gadgets.YahooComIconUrl"></yap:Extension> <!-- Icon to be displayed at Yahoo.com, 20x20, .gif
+                                                                                DEPRECATED: This extension is no longer used
+                                                                                            by Yahoo.com -->
+        <yap:Extension name="yap.gadgets.ScreenshotUrl"></yap:Extension> <!-- -Screenshot preview image, 300x250 -->
+        <yap:Extension name="yap.gadgets.CreatorImageUrl"></yap:Extension> <!-- Your company logo, 256x256 -->
+        <yap:Extension name="yap.gadgets.CreatorWebsiteUrl"></yap:Extension> <!-- Your website -->
+        <yap:Extension name="yap.gadgets.TouUrl"></yap:Extension> <!-- Your terms of use -->
+        <yap:Extension name="yap.gadgets.PrivacyUrl"></yap:Extension> <!-- Your privacy policy -->
+        <yap:Extension name="yap.gadgets.Tags"></yap:Extension> <!-- Tags, comma separated -->
+    </ModulePrefs>
+    
+    <!-- The content of this section will render in Canvas View. -->
+    <Content type="html" view="YahooFullView, canvas" >
+<Content type="html" view="canvas"><![CDATA[
+<link type="text/css" href="http://github.com/jcleblanc/programming-social-applications/raw/master/opensocial-gadgets/ch4_social_get_set/styles.css">
+<div id="gadget">
+<div id="railRight">
+<div class="header">Other Profiles</div>
+<div id="friendLinks"></div>
+<div class="header">Update Your Friends</div>
+<form name="addActivity" onSubmit="return false;">
+<label for="title">Title:</label><br />
+<input type="text" name="title" id="title" /><br />
+<label for="description">Description:</label><br />
+<input type="text" name="description" id="description" /><br />
+<label for="url">URL:</label><br />
+<input type="text" name="url" id="url" /><br /><br />
+<button onclick="socialController.addActivity();">Add Activity</button>
+</form>
+</div>
+<div id="updates">
+<div class="header">Updates From Your Connections</div>
+<div id="updateContent"></div>
+</div>
+</div>
+<script type="text/javascript">
+var socialController = {
+//fetch profile photos for friends
+fetchProfile: function(insertID){
+osapi.people.get({userId: "@viewer", groupId: "@friends", count: 12}).execute(function(result){
+var friends = result.list;
+var html = '';
+for (var i = 0; i < friends.length; i++){
+html += "<a href='" + friends[i].profileUrl + "'><img src='" + friends[i].thumbnailUrl + "' /></a>";
+}
+document.getElementById(insertID).innerHTML = html;
+});
+},
+//fetch update stream for friends
+fetchUpdates: function(insertID){
+osapi.activities.get({userId: "@viewer", groupId: "@friends", count: 30}).execute(function(result){
+console.log(result);
+var activities = result.list;
+var html = '';
+for (var i = 0; i < activities.length; i++){
+html += "<p><a href='" + activities[i].url + "'>" + activities[i].title + "</a><br /></p>";
+}
+document.getElementById(insertID).innerHTML = html;
+});
+},
+//insert a new activity for the current viewer
+addActivity: function(){
+osapi.activities.create({
+userId: "@viewer",
+groupId: "@self",
+activity: {
+title: document.getElementById("title").value,
+body: document.getElementById("description").value,
+url: document.getElementById("url").value
+}
+}).execute();
+}
+};
+socialController.fetchProfile("friendLinks");
+socialController.fetchUpdates("updateContent");
+</script>
+]]></Content>
+    </Content>
+        
+</Module>

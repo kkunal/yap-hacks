@@ -1,0 +1,28 @@
+    <div id="myarea">  
+    <h3>Simple Form created using yml:form </h3>  
+    <p>This file is form.html.</p>  
+      
+    <yml:form name="myform"  view="YahooFullView" params="http://yap-studio.com/qa/yap/yap_openhackday/yml/form/form.php" method="POST">  
+      
+    <fieldset>  
+    User Name: <input type="text" name="nameinput" id="nameid" value="Amit" /> <br>  
+    Work: <input type="text" name="work" value="hacker"/> <br>  
+    Location: <input type="text" name="location" value="EGL" /><br>  
+    City: <input type="text" name="city" value="Bangalore" /><br>  
+    Commute: <input type="radio" name="commute" value="carpool"  /> carpool   
+    <input type="radio" name="commute" value="drive" /> drive<br />  
+    Sex: <select name="sex" >  
+    <option value="">Choose one...</option>  
+    <option value="Male">Male</option>  
+    <option value="Female">Female</option>  
+    </select> <br>  
+    Comments:   
+    <br>  
+    <textarea id="test"  name="myarea" rows="10" cols="20">enter comments here...</textarea> <br>  
+    Validate:  
+    <input type="checkbox" name="validate" value="agreed" /> <br>  
+    </fieldset>  
+    <input type="submit" />  
+      
+    </yml:form>  
+    </div>  
